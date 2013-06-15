@@ -22,7 +22,7 @@ class Session {
             self::regenerateId();
         }
 
-        self::$onetime_values = $_SESSION[self::ONETIME_KEY];
+        self::$onetime_values = isset($_SESSION[self::ONETIME_KEY]) ? $_SESSION[self::ONETIME_KEY] : array();
         unset($_SESSION[self::ONETIME_KEY]);
 
         self::$permanent_values = $_SESSION;
