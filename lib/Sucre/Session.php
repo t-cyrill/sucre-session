@@ -52,7 +52,7 @@ class Session {
      */
     public static function get($key)
     {
-        return isset(self::$permanent_values[$key]) ? self::$permanent_values[$Key] : null;
+        return isset(self::$permanent_values[$key]) ? self::$permanent_values[$key] : null;
     }
 
     /**
