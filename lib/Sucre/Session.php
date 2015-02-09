@@ -2,19 +2,21 @@
 namespace Sucre;
 
 class Session {
-    private static $onetime_values;
-    private static $permanent_values;
+    private static $onetime_values,
+                   $permanent_values,
+                   $regenerated = false;
 
     const ONETIME_KEY = '__onetime_values';
 
     /**
-     * セッションを扱うための初期化を行う
+     * Sucre::Session's initializer
+     * This function call session_start() if not initialized
      *
-     * このメソッドの呼び出しにより、session_startが行われます。
+     * @param bool $regenerate true: call self::regenerateId();
      */
     public static function init($regenerate = false)
     {
-        if (session_id() === '') {
+        if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
 
@@ -31,7 +33,10 @@ class Session {
     }
 
     /**
-     * 一時的な値を取得する
+     * Get onetime value
+     *
+     * @param mixed $key key name
+     * @return mixed value or null if not set
      */
     public static function getFlash($key)
     {
@@ -39,7 +44,10 @@ class Session {
     }
 
     /**
-     * 一時的な値を設定する
+     * Set onetime value
+     *
+     * @param mixed $key key name
+     * @param mixed $value value
      */
     public static function setFlash($key, $value)
     {
@@ -48,7 +56,9 @@ class Session {
     }
 
     /**
-     * セッション変数の値を取得する
+     * Get $_SESSION value
+     *
+     * @return mixed value or null if not set
      */
     public static function get($key)
     {
@@ -56,7 +66,7 @@ class Session {
     }
 
     /**
-     * セッション変数に値を設定する
+     * Set $_SESSION value
      */
     public static function set($key, $value)
     {
@@ -65,7 +75,7 @@ class Session {
     }
 
     /**
-     * セッションIdを取得する
+     * Alias session_id
      */
     public static function getId()
     {
@@ -73,7 +83,9 @@ class Session {
     }
 
     /**
-     * セッションIdを設定する
+     * Alias session_id($id)
+     *
+     * @param mixed $id new settion id
      */
     public static function setId($id)
     {
@@ -81,15 +93,26 @@ class Session {
     }
 
     /**
-     * セッションIdを再生成する
+     * Alias session_regenerate_id($delete_old)
+     *
+     * @param bool $delete_old [=true]
      */
     public static function regenerateId($delete_old = true)
     {
+        self::$regenerated = true;
         session_regenerate_id($delete_old);
     }
 
     /**
-     * セッションを完全に破棄する
+     * Get session_id regenerated status
+     */
+    public static function regenerated()
+    {
+        return self::$regenerated;
+    }
+
+    /**
+     * Drop session
      */
     public static function destroy()
     {
